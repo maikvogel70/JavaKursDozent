@@ -1,0 +1,16 @@
+   Ändern Sie in den Suchen-und-Ersetzen-Dialog von einem modalen Dialog in einen
+   nicht-modalen Dialog.
+   Trotzdem soll verhindert werden, dass dieser Dialog mehrfach über das Hauptprogramm aufgerufen
+   werden kann (siehe Suchen-Und-Ersetzen-Dialog des Window Editors).	
+
+   Wenn das Hauptfenster geschlossen wird, soll auch der evtl. angezeigte Dialog geschlossen werden. 
+
+   Wenn der Inhalt der TextArea vom Anwender geändert wurde (über die Tastatur oder über den 
+   Suchen-Und-Ersetzen-Dialog) soll beim Schließen des Programms ein entsprechender Hinweis
+   angezeigt werden. Beispiel: Daten wurden geändert.Sollen die Daten vorher gespeichert werden ?	
+   
+   Es genügt das Speichern der Daten durch eine Ausgabe über die Konsole zu signalisieren.
+
+   Sollten keine Änderungen vorgenommen worden sein, kann das Programm kommentarlos
+   beendet werden.
+   

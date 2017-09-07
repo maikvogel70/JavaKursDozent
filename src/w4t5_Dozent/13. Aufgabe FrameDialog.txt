@@ -1,0 +1,8 @@
+1. Zwei zusätzliche CheckBoxen auf dem Frame anlegen, mit den denen dynamisch die automatische
+   Zeilenschaltung (auch auf auf Wortgrenze) ausgewählt werden kann. 
+     
+
+2. Optimieren des Einlesens von großen Textdateien.
+   Aktuell verwendet das Programm die Klasse Scanner um Textdateien satzweise zu lesen und in einer
+   TextArea anzuzeigen. Es gibt jedoch andere Klassen, die große Dateien sehr viel effizienter
+   verarbeiten können. Versuchen Sie mit mindestens einer dieser Klassen das Lesen zu optimieren.

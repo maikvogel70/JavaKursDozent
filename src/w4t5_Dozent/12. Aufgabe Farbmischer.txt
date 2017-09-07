@@ -1,0 +1,21 @@
+Aufgaben Farbmischer:
+
+1. Zusätzliche Schieberegler für die Farben Grün und Blau,
+   analog zur Farbe Rot, hinzufügen.
+
+2. Die Hintergrundfarbe des Frames aus den Werten der drei
+   Schieberegler (RGB) anzeigen.
+
+3. Die Beschriftungen der Schieberegler und des Frames müssen, unabhängig von der jeweiligen
+   Hintergrundfarbe, immer lesbar bleiben.
+
+4. Über die Textfelder sollen ebenfalls Eingaben für die Farbwerte erlaubt sein.
+   Plausibilitätsprüfungen für Textfelder implementieren:
+   a) maximale Eingabelänge 3 Ziffern,
+   b) nur die Eingabe von Werten zwischen 0 und 255 ist erlaubt.
+
+5. Nach der Eingabe des Farbwertes in einem der Textfelder, den dazugehörigen
+   Schieberegler auf die angegebene Position bewegen und die damit verbundenen
+   Farbänderungen durchführen.
+
+6. Einen Button zum ordnungsgemäßen Schließen des Programms hinzufügen.	
