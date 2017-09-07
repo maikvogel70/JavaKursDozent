@@ -1,0 +1,19 @@
+Aufgabe ListBoxComboBox:
+
+1. Zwei zusätzliche Comboboxen erstellen für:
+   	- Schriftstil,
+   	- Schriftgröße
+   und mit den verfügbaren Werten füllen.
+
+2. In einer TextArea soll ein Beispieltext angezeigt werden, der sich
+   abhängig von der verwendeten ComboBox (Schriftart, Schriftstil, Schriftgrösse)
+   ändert.
+
+   Beispiele:
+   Zwölf Boxkämpfer jagen Viktor quer über den großen Sylter Deich.
+   Franz jagt im komplett verwahrlosten Taxi quer durch Bayern. 1234567890
+
+3. Die Einstellungen in den Comboboxen sollen immer (auch beim erstmaligen Anzeigen
+   des Frames) in der TextArea entsprechend dargestellt werden.
+  
+4. Einen Button zum Beenden des Programms hinzufügen
