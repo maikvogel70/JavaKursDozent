@@ -1,7 +1,6 @@
 package w5t5_Dozent.ErweiterteComboBox;
 
 import java.awt.Color;
-import java.awt.Component;
 import java.awt.Font;
 import java.awt.GraphicsEnvironment;
 import java.awt.Insets;
@@ -10,15 +9,13 @@ import java.awt.Toolkit;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.FocusEvent;
+import java.awt.event.FocusListener;
 import java.awt.event.ItemEvent;
 import java.awt.event.ItemListener;
-import java.awt.event.FocusListener;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
 import java.text.DecimalFormatSymbols;
-import java.util.Vector;
 
-import javax.swing.BorderFactory;
 import javax.swing.DefaultComboBoxModel;
 import javax.swing.DefaultListModel;
 import javax.swing.Icon;
@@ -26,9 +23,7 @@ import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JComboBox;
 import javax.swing.JFrame;
-import javax.swing.JLabel;
 import javax.swing.JList;
-import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTextArea;
 import javax.swing.ListCellRenderer;
@@ -39,8 +34,8 @@ import javax.swing.text.JTextComponent;
 
 import util.ListItem;
 
-public class ListBoxComboBox extends JFrame implements ListSelectionListener, ItemListener, KeyListener, ActionListener, FocusListener
-{
+public class ListBoxComboBox extends JFrame
+		implements ListSelectionListener, ItemListener, KeyListener, ActionListener, FocusListener {
 	// private JList<String> listBox;
 	private JList<ListItem<Integer, String>> listBox;
 	private JList<ListItem<Integer, String>> msListBox;
@@ -67,13 +62,11 @@ public class ListBoxComboBox extends JFrame implements ListSelectionListener, It
 
 	private util.MyFocusTraversalPolicy newPolicy;
 
-	public ListBoxComboBox()
-	{
+	public ListBoxComboBox() {
 		initializeComponent();
 	}
 
-	private void initializeComponent()
-	{
+	private void initializeComponent() {
 		this.setTitle("Listbox und ComboBox Demo");
 		this.setSize(510, 460);
 		this.setLayout(null);
@@ -165,14 +158,12 @@ public class ListBoxComboBox extends JFrame implements ListSelectionListener, It
 
 	}
 
-	public void showFrame()
-	{
+	public void showFrame() {
 		initFrame();
 		this.setVisible(true);
 	}
 
-	private void initFrame()
-	{
+	private void initFrame() {
 
 		this.setLocationRelativeTo(null);
 
@@ -195,50 +186,44 @@ public class ListBoxComboBox extends JFrame implements ListSelectionListener, It
 		listBox.ensureIndexIsVisible(listBox.getSelectedIndex());
 
 		// Programmatische Mehrfachauswahl
-		msListBox.setSelectedIndices(new int[]
-		{ 2, 3, 5, 9 });
+		msListBox.setSelectedIndices(new int[] { 2, 3, 5, 9 });
 
-		// Die Schriftart erneut setzen, damit der Inhalt der FontStyle-ComboBox aktualsiert wird.
+		// Die Schriftart erneut setzen, damit der Inhalt der FontStyle-ComboBox
+		// aktualsiert wird.
 		setFont(cboFont.getSelectedItem().toString());
 
 	}
 
-	private void populateListBox()
-	{
+	private void populateListBox() {
 
-		for (int i = 1001; i <= 1010; i++)
-		{
+		for (int i = 1001; i <= 1010; i++) {
 			listBoxModel.addElement(new ListItem<>(i, String.format("ListBox Eintrag %03d", i)));
 		}
 
 	}
 
-	private void populateMultiselectListBox()
-	{
+	private void populateMultiselectListBox() {
 
 		for (int i = 2001; i <= 2010; i++)
 			msListBoxModel.addElement(new ListItem<>(i, String.format("Multiselect ListBox Eintrag %03d", i)));
 
 	}
 
-	private void populateFontComboBox()
-	{
+	private void populateFontComboBox() {
 		ExtendedListItem cboItem;
 		int i = 0;
 		GraphicsEnvironment e = GraphicsEnvironment.getLocalGraphicsEnvironment();
 
 		fontFamilies = e.getAvailableFontFamilyNames();
 
-		for (String ff : fontFamilies)
-		{
+		for (String ff : fontFamilies) {
 			cboItem = new ExtendedListItem(ff, Font.PLAIN, 14, Color.BLACK, null, ff);
 			cboFontModel.addElement(new ListItem<Integer, ExtendedListItem>(++i, cboItem));
 		}
 
 	}
 
-	private void populateFontStyleComboBox(String fontFamily)
-	{
+	private void populateFontStyleComboBox(String fontFamily) {
 		ExtendedListItem cboItem;
 
 		// Neues Datenmodell erstellen
@@ -264,23 +249,18 @@ public class ListBoxComboBox extends JFrame implements ListSelectionListener, It
 
 	}
 
-	private void populateFontSizeComboBox()
-	{
-		int[] arrSize = new int[]
-		{ 8, 9, 10, 11, 12, 14, 16, 18, 20, 22, 24, 26, 28, 36, 48, 72 };
+	private void populateFontSizeComboBox() {
+		int[] arrSize = new int[] { 8, 9, 10, 11, 12, 14, 16, 18, 20, 22, 24, 26, 28, 36, 48, 72 };
 
 		for (int i = 0; i < arrSize.length; i++)
 			cboFontSizeModel.addElement(new ListItem<Integer, String>(arrSize[i], String.format("%d", arrSize[i])));
 
 	}
 
-	private int getCurrentFontIndex(String fontFamily)
-	{
+	private int getCurrentFontIndex(String fontFamily) {
 		int retValue = -1;
-		for (int i = 0; i < fontFamilies.length; i++)
-		{
-			if (fontFamily.equalsIgnoreCase(fontFamilies[i]))
-			{
+		for (int i = 0; i < fontFamilies.length; i++) {
+			if (fontFamily.equalsIgnoreCase(fontFamilies[i])) {
 				retValue = i;
 				break;
 			}
@@ -289,13 +269,11 @@ public class ListBoxComboBox extends JFrame implements ListSelectionListener, It
 		return retValue;
 	}
 
-	private void showValue(ListItem li)
-	{
+	private void showValue(ListItem li) {
 		System.out.println(li.getValueMember() + " - " + li.getDisplayMember());
 	}
 
-	private void showMultiSelectItems()
-	{
+	private void showMultiSelectItems() {
 		System.out.println();
 
 		for (ListItem<Integer, String> li : msListBox.getSelectedValuesList())
@@ -305,8 +283,7 @@ public class ListBoxComboBox extends JFrame implements ListSelectionListener, It
 
 	}
 
-	private void setFont(String fontFamily)
-	{
+	private void setFont(String fontFamily) {
 
 		ListItem<Integer, ExtendedListItem> listItem;
 
@@ -320,7 +297,8 @@ public class ListBoxComboBox extends JFrame implements ListSelectionListener, It
 		// ausgewählten Eintrags sind unterschiedliche Komponenten.
 
 		listItem = (ListItem<Integer, ExtendedListItem>) cboFont.getSelectedItem();
-		cboFont.setFont(new Font(fontFamily, listItem.getDisplayMember().getFontStyle(), listItem.getDisplayMember().getFontSize()));
+		cboFont.setFont(new Font(fontFamily, listItem.getDisplayMember().getFontStyle(),
+				listItem.getDisplayMember().getFontSize()));
 
 		// Aktualisieren der FontStyle-Datenmodells mit der neuen Schriftart
 
@@ -330,8 +308,7 @@ public class ListBoxComboBox extends JFrame implements ListSelectionListener, It
 		// Die Font COmboBox wird zuerst gefüllt und erst danach die FontStyle-ComboBox
 		// Indikator dafür, ob die FontStyle-ComboBox bereits gefüllt wurde ist der
 		// selektierte Eintrag.
-		if (i > -1)
-		{
+		if (i > -1) {
 
 			listItem = (ListItem<Integer, ExtendedListItem>) cboFontStyle.getSelectedItem();
 
@@ -342,14 +319,14 @@ public class ListBoxComboBox extends JFrame implements ListSelectionListener, It
 			cboFontStyle.setSelectedIndex(i);
 
 			// Den ausgewählten Eintrag ebenfalls aktualisieren
-			cboFontStyle.setFont(new Font(fontFamily, listItem.getDisplayMember().getFontStyle(), listItem.getDisplayMember().getFontSize()));
+			cboFontStyle.setFont(new Font(fontFamily, listItem.getDisplayMember().getFontStyle(),
+					listItem.getDisplayMember().getFontSize()));
 
 		}
 
 	}
 
-	private void setFontStyle(int fontStyle)
-	{
+	private void setFontStyle(int fontStyle) {
 		ListItem<Integer, ExtendedListItem> li = null;
 		ExtendedListItem cboItem = null;
 
@@ -362,11 +339,9 @@ public class ListBoxComboBox extends JFrame implements ListSelectionListener, It
 		// ausgewählten Eintrags
 		// sind unterschiedliche Komponenten.
 
-		if (cboFontStyle.getSelectedItem() instanceof ListItem)
-		{
+		if (cboFontStyle.getSelectedItem() instanceof ListItem) {
 			li = (ListItem<Integer, ExtendedListItem>) cboFontStyle.getSelectedItem();
-			if (li.getDisplayMember() instanceof ExtendedListItem)
-			{
+			if (li.getDisplayMember() instanceof ExtendedListItem) {
 				cboItem = (ExtendedListItem) li.getDisplayMember();
 				cboFontStyle.setFont(cboFontStyle.getFont().deriveFont(cboItem.getFontStyle()));
 
@@ -376,13 +351,11 @@ public class ListBoxComboBox extends JFrame implements ListSelectionListener, It
 
 	}
 
-	private void setFontSize(float fontSize)
-	{
+	private void setFontSize(float fontSize) {
 		taFontDemo.setFont(taFontDemo.getFont().deriveFont(fontSize));
 	}
 
-	private boolean isCharacterAllowed(char c, JTextComponent tc)
-	{
+	private boolean isCharacterAllowed(char c, JTextComponent tc) {
 
 		boolean retValue = false;
 
@@ -390,11 +363,13 @@ public class ListBoxComboBox extends JFrame implements ListSelectionListener, It
 
 		// if (Character.isDigit(c))
 		// retValue = true;
-		// else if (c == decimalSeparator && !tc.getText().contains(Character.toString(decimalSeparator)))
+		// else if (c == decimalSeparator &&
+		// !tc.getText().contains(Character.toString(decimalSeparator)))
 		// retValue = true;
 
 		// oder:
-		if (Character.isDigit(c) || (c == decimalSeparator && !tc.getText().contains(Character.toString(decimalSeparator))))
+		if (Character.isDigit(c)
+				|| (c == decimalSeparator && !tc.getText().contains(Character.toString(decimalSeparator))))
 			retValue = true;
 
 		return retValue;
@@ -404,24 +379,21 @@ public class ListBoxComboBox extends JFrame implements ListSelectionListener, It
 	/**
 	 * @param args
 	 */
-	public static void main(String[] args)
-	{
+	public static void main(String[] args) {
 		ListBoxComboBox f = new ListBoxComboBox();
 		f.showFrame();
 
 	}
 
 	@Override
-	public void valueChanged(ListSelectionEvent e)
-	{
+	public void valueChanged(ListSelectionEvent e) {
 
 		// Das Auswählen eines Listbox-Eintrages löst eine Serie
 		// von Ereignissen aus. Erst wenn alle Ereignisse abgeschlossen
 		// sind (getValueIsAdjusting()), wird der ausgewählte Eintrag
 		// übernommen.
 
-		if (e.getSource() instanceof JList && !e.getValueIsAdjusting())
-		{
+		if (e.getSource() instanceof JList && !e.getValueIsAdjusting()) {
 
 			if (e.getSource() == listBox)
 				showValue(listBox.getSelectedValue());
@@ -433,8 +405,7 @@ public class ListBoxComboBox extends JFrame implements ListSelectionListener, It
 	}
 
 	@Override
-	public void keyPressed(KeyEvent e)
-	{
+	public void keyPressed(KeyEvent e) {
 		// Das keyPressed-Ereignis in der editierbaren Combobox löst
 		// auch ein ItemStateChanged-Ereignis des ItemListeners aus.
 		// Der Index ist dann, da keine Auswahl über die Liste getroffen
@@ -444,17 +415,14 @@ public class ListBoxComboBox extends JFrame implements ListSelectionListener, It
 	}
 
 	@Override
-	public void keyReleased(KeyEvent arg0)
-	{
+	public void keyReleased(KeyEvent arg0) {
 		// TODO Auto-generated method stub
 
 	}
 
 	@Override
-	public void keyTyped(KeyEvent e)
-	{
-		if (e.getSource().equals(cboFontSize.getEditor().getEditorComponent()))
-		{
+	public void keyTyped(KeyEvent e) {
+		if (e.getSource().equals(cboFontSize.getEditor().getEditorComponent())) {
 			// Die Enter-Taste löst auch das in keyTyped-Ereignis aus.
 			// Da die Taste nicht durch die Überprüfung von isDigit()
 			// den Rückgabewert 'false' zurückliefert wird vorher
@@ -475,8 +443,7 @@ public class ListBoxComboBox extends JFrame implements ListSelectionListener, It
 			if (e.getKeyChar() == '.')
 				e.setKeyChar(decimalSeparator);
 
-			if (!isCharacterAllowed(e.getKeyChar(), (JTextComponent) e.getSource()))
-			{
+			if (!isCharacterAllowed(e.getKeyChar(), (JTextComponent) e.getSource())) {
 				Toolkit.getDefaultToolkit().beep();
 				e.consume();
 				return;
@@ -487,13 +454,11 @@ public class ListBoxComboBox extends JFrame implements ListSelectionListener, It
 	}
 
 	@Override
-	public void itemStateChanged(ItemEvent e)
-	{
+	public void itemStateChanged(ItemEvent e) {
 		JComboBox<?> cb = null;
 		ListItem<?, ?> listItem = null;
 
-		if (e.getSource() instanceof JComboBox)
-		{
+		if (e.getSource() instanceof JComboBox) {
 
 			cb = (JComboBox<?>) e.getSource();
 			listItem = (ListItem<?, ?>) cb.getSelectedItem();
@@ -516,8 +481,7 @@ public class ListBoxComboBox extends JFrame implements ListSelectionListener, It
 			// Keine Eintrag ausgewählt: selectedIndex = - 1.
 			// Betrifft editierbare ComboBox 'cboFontSize', wenn
 			// über die Tatatur eine Grösse eingegeben wurde.
-			if (e.getStateChange() == ItemEvent.SELECTED && cb.getSelectedIndex() > -1)
-			{
+			if (e.getStateChange() == ItemEvent.SELECTED && cb.getSelectedIndex() > -1) {
 
 				showValue(listItem);
 
@@ -540,23 +504,20 @@ public class ListBoxComboBox extends JFrame implements ListSelectionListener, It
 	}
 
 	@Override
-	public void actionPerformed(ActionEvent e)
-	{
+	public void actionPerformed(ActionEvent e) {
 		if (e.getSource().equals(btnBeenden))
 			this.dispose();
 
 	}
 
 	@Override
-	public void focusGained(FocusEvent e)
-	{
+	public void focusGained(FocusEvent e) {
 		if (e.getSource() == cboFontSize.getEditor().getEditorComponent())
 			cboFontSize.getEditor().selectAll();
 	}
 
 	@Override
-	public void focusLost(FocusEvent e)
-	{
+	public void focusLost(FocusEvent e) {
 		if (e.getSource() == cboFontSize.getEditor().getEditorComponent())
 			// Nur für Nachkommawerte. Dann muss das Komma durch einen Punkt
 			// ersetzt werden.
