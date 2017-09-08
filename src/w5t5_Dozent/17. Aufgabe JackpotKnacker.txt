@@ -1,0 +1,15 @@
+Entwerfen Sie eine grafische Benutzeroberfläche um einen Lotto-Tip (6 aus 49) abzugeben.
+(6 Lottozahlen zwischen 1 und 49).
+
+Wenn die Eingabe vollständig ist einen Button aktivieren, der die Ziehung der Lottozahlen
+mit Hilfe eines Zufallszahlengenerators simuliert.
+
+Übersichtliche Anzeige des Ziehungsergebnisses.
+Nach der Ziehung sollte sofort erkennbar sein, welches die gezogen Zahlen waren und wieviele
+davon richtig getippt wurden.
+
+Anschließend noch Ziehung der Superzahl (Werte zwischen 0 - 9).
+
+Einen zusätzlichen Button zur Verfügung stellen, mit dem man das Tippen und die Ziehung
+beliebig oft wiederholen kann, ohne das Programm neu starten zu müssen. 
+ 
