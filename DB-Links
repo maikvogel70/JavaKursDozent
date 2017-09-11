@@ -4,3 +4,6 @@ https://downloads.mariadb.org/connector-java/
 XAMPP (Apache, DB, usw.)
 https://www.apachefriends.org/de/download.html
 Im Installationspfad dann "xampp-control.exe" ausführen und "Apache" & "MySQL" starten
+
+PHPMYADMIN starten:
+Im Browser "localhost" aufrufen
