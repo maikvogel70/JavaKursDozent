@@ -2,6 +2,8 @@ package dao;
 
 import java.sql.Connection;
 import java.sql.DriverManager;
+import java.sql.ResultSet;
+import java.sql.Statement;
 
 import javax.swing.JOptionPane;
 
@@ -58,6 +60,34 @@ public class DBConnection
 	}
 	
 	
+	
+	/**
+	 * Gibt die aktuelle Datenbankverbindung zurück.
+	 * 
+	 * @return
+	 */
+	public static Connection getConnection()
+	{
+		return dbConn;
+	}
+
+
+	/**
+	 * Gibt die aktuelle Verbindungszeichenfolge zurück.
+	 * 
+	 * @return
+	 */
+	public static String getConnectionString()
+	{
+		return connectionString;
+	}
+
+
+
+
+	/**
+	 * Schließt die aktuelle Datenbankverbindung.
+	 */
 	public static void closeConnection()
 	{
 		
@@ -78,7 +108,101 @@ public class DBConnection
 		
 	}
 	
+	/**
+	 * Gibt den Namen der aktuell geöffneten Datenbank zurück.
+	 * 
+	 * @return
+	 */
+	public static String getCatalog()
+	{
+		
+		String retValue = "";
+		
+		if (dbConn == null)
+			return retValue;
+		
+		try
+		{
+			retValue = dbConn.getCatalog();
+		}
+		catch (Exception ex)
+		{
+			
+		}
+		
+		return retValue;
+	}
 	
+	
+	public static int executeNonQuery(String SQL)
+	{
+		
+		int retValue = -1;
+		
+		Statement stmt;
+		
+		if (dbConn == null)
+			return retValue;
+		
+		try
+		{
+			stmt = dbConn.createStatement();
+			retValue = stmt.executeUpdate(SQL);
+			stmt.close();
+		}
+		catch (Exception ex)
+		{
+			JOptionPane.showMessageDialog(null, "Fehler beim Zugriff auf die Datenbank: " + ex.getMessage(), "Fehler", JOptionPane.ERROR_MESSAGE);
+			
+		}
+		
+		return retValue;
+		
+	}
+	
+	
+	public static Object executeScalar(String SQL)
+	{
+		
+		Object retValue = null;
+		
+		Statement stmt;
+		
+		if (dbConn == null)
+			return retValue;
+		
+		try
+		{
+			stmt = dbConn.createStatement();
+			ResultSet rSet = stmt.executeQuery(SQL);
+			
+			// Auf die erste Zeile innerhalb des ResultSets positionieren
+			rSet.next();
+			
+			// Den Inhalt der ersten Spalte in der Zeile dem Rückgabewert zuweisen
+			retValue = rSet.getObject(1);
+			
+			// ResultSet und Statement schließen
+			rSet.close();
+			stmt.close();
+		
+		}
+		catch (Exception ex)
+		{
+			JOptionPane.showMessageDialog(null, "Fehler beim Zugriff auf die Datenbank: " + ex.getMessage(), "Fehler", JOptionPane.ERROR_MESSAGE);
+			
+		}
+		
+		return retValue;
+		
+	}
+	
+	
+	
+	public static String dbString(String value)
+	{
+		return "'" + value.replace("'", "''") + "'";
+	}
 	
 	
 	
