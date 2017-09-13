@@ -133,7 +133,13 @@ public class DBConnection
 		return retValue;
 	}
 	
-	
+	/**
+	 * Führt alle SQL-Anweisungen aus, die nicht zu Kategorie Data Query
+	 * Language gehören.
+	 * 
+	 * @param SQL
+	 * @return
+	 */
 	public static int executeNonQuery(String SQL)
 	{
 		
@@ -160,7 +166,13 @@ public class DBConnection
 		
 	}
 	
-	
+	/**
+	 * Führt alle SQL-Anweisungen der Data Query Language aus, und liefert den
+	 * Wert der ersten Zeile und der ersten Spalte zurück.
+	 * 
+	 * @param SQL
+	 * @return
+	 */
 	public static Object executeScalar(String SQL)
 	{
 		
@@ -197,8 +209,45 @@ public class DBConnection
 		
 	}
 	
+	/**
+	 * Führt alle SQL-Anweisungen der Data Query Language aus.
+	 * 
+	 * @param SQL
+	 * @return
+	 */
+	public static ResultSet executeQuery(String SQL)
+	{
+		
+		ResultSet rSet = null;
+		Statement stmt;
+		
+		if (dbConn == null)
+			return rSet;
+		
+		try
+		{
+			stmt = dbConn.createStatement();
+			rSet = stmt.executeQuery(SQL);
+		}
+		catch (Exception ex)
+		{
+			JOptionPane.showMessageDialog(null, "Fehler beim Zugriff auf die Datenbank: " + ex.getMessage(), "Fehler", JOptionPane.ERROR_MESSAGE);
+			
+		}
+		
+		return rSet;
+		
+	}
 	
 	
+	/**
+	 * Die Zeichenkette wird in einfache Anführungszeichen gesetzt,
+	 * evtl. vorkommende Anführungszeichen innerhalb der Zeichenkette
+	 * werden durch doppelte Anführungszeichen ersetzt.
+	 * 
+	 * @param value
+	 * @return
+	 */
 	public static String dbString(String value)
 	{
 		return "'" + value.replace("'", "''") + "'";
