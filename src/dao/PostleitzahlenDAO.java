@@ -29,8 +29,26 @@ public class PostleitzahlenDAO
 			retValue = (long)obj;
 		
 		
-		
 		return ++retValue;
+	}
+	
+	
+	public static boolean istPLZOrtVorhanden(String PLZ, String Ort)
+	{
+		
+		boolean retValue = false;
+		
+		
+		String SQL = "SELECT COUNT(*) FROM POSTLEITZAHLEN ";
+		SQL += "WHERE PLZ = " + DBConnection.dbString(PLZ);
+		SQL += " AND ORT = " + DBConnection.dbString(Ort);
+		
+		Object obj = DBConnection.executeScalar(SQL);
+		
+		if (obj != null)
+			retValue = ((Number)obj).longValue() > 0;
+			
+		return retValue;
 	}
 	
 	

@@ -73,6 +73,7 @@ public class Datenbankzugriffe extends JFrame implements WindowListener, ActionL
 	private JMenuItem miBeenden, miPostleitzahlen, miPostleitzahlenImportieren;
 	
 	private StatusBar statusBar;
+	private JProgressBar progressBar;
 	
 	private File fcFile;
 	
@@ -234,6 +235,10 @@ public class Datenbankzugriffe extends JFrame implements WindowListener, ActionL
 				
 				if (split.length == 2)
 				{
+					
+					if (PostleitzahlenDAO.istPLZOrtVorhanden(split[0], split[1]))
+						continue;
+					
 					
 					if (PostleitzahlenDAO.insertPLZOrt(lngKey, split[0], split[1]))
 					{
