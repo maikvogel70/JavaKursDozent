@@ -1,9 +1,10 @@
-package w6t3_Dozent;
+package w6t5_Dozent;
 
 import java.awt.BorderLayout;
 import java.awt.Component;
 import java.awt.Dimension;
 import java.awt.Font;
+import java.awt.Toolkit;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.KeyEvent;
@@ -32,6 +33,11 @@ public class PLZTable extends JDialog implements ActionListener, ListSelectionLi
 	private JMenu	      menuDatei, menuBearbeiten;
 	private JMenuItem	  miNeu, miAendern, miLoeschen, miSchliessen;
 	
+	// Popup Menü verwenden
+	private JPopupMenu 	  popupMenu;
+	private JMenuItem     pmiNeu, pmiAendern, pmiLoeschen; 
+	
+	
 	private JTable        Tabelle;
 	private JScrollPane   jspTabelle;
 	
@@ -48,6 +54,7 @@ public class PLZTable extends JDialog implements ActionListener, ListSelectionLi
 	{
 		
 		this.setTitle("Postleitzahlen");
+		this.setIconImage(Toolkit.getDefaultToolkit().getImage(this.getClass().getResource(("/images/Server.png"))));
 		this.setSize(800,  480);
 		
 		this.setDefaultCloseOperation(DISPOSE_ON_CLOSE);
@@ -61,9 +68,12 @@ public class PLZTable extends JDialog implements ActionListener, ListSelectionLi
 		miSchliessen = SwingUtil.createMenuItem(menuDatei, null, SwingUtil.MenuItemType.ITEM_PLAIN, this, "Schließen", null, 'S', null);
 		
 		menuBearbeiten = SwingUtil.createMenu(menuBar, "Bearbeiten", null, 'B');
-		miNeu = SwingUtil.createMenuItem(menuBearbeiten, null, SwingUtil.MenuItemType.ITEM_PLAIN, this, "Neu", null, 'N', null);
-		miAendern = SwingUtil.createMenuItem(menuBearbeiten, null, SwingUtil.MenuItemType.ITEM_PLAIN, this, "Ändern", null, 'Ä', null);
-		miLoeschen = SwingUtil.createMenuItem(menuBearbeiten, null, SwingUtil.MenuItemType.ITEM_PLAIN, this, "Löschen", null, 'L', null);
+		miNeu = SwingUtil.createMenuItem(menuBearbeiten, null, SwingUtil.MenuItemType.ITEM_PLAIN, this, "Neu", 
+				new ImageIcon(this.getClass().getResource("/images/New.png")), 'N', null);
+		miAendern = SwingUtil.createMenuItem(menuBearbeiten, null, SwingUtil.MenuItemType.ITEM_PLAIN, this, "Ändern", 
+				new ImageIcon(this.getClass().getResource("/images/Edit.png")), 'Ä', null);
+		miLoeschen = SwingUtil.createMenuItem(menuBearbeiten, null, SwingUtil.MenuItemType.ITEM_PLAIN, this, "Löschen", 
+				new ImageIcon(this.getClass().getResource("/images/Delete.png")), 'L', null);
 		
 		this.setJMenuBar(menuBar);
 		
@@ -81,6 +91,11 @@ public class PLZTable extends JDialog implements ActionListener, ListSelectionLi
 		// MouseListener für Doppelklick
 		Tabelle.addMouseListener(this);
 
+		
+		createPopupMenu();
+		
+		// Der Tabelle das PopupMenü zuweisen
+		Tabelle.setComponentPopupMenu(popupMenu);
 		
 		// Zum Blättern der Tabelle
 		jspTabelle = new JScrollPane(Tabelle);
@@ -107,6 +122,22 @@ public class PLZTable extends JDialog implements ActionListener, ListSelectionLi
 			
 	}
 	
+	private void createPopupMenu()
+	{
+		popupMenu = new JPopupMenu();
+
+		pmiNeu = SwingUtil.createPopUpMenuItem(popupMenu, null, SwingUtil.MenuItemType.ITEM_PLAIN, this, "Neu", 
+				new ImageIcon(this.getClass().getResource("/images/New.png")), 'N', null);
+				
+		pmiAendern = SwingUtil.createPopUpMenuItem(popupMenu, null, SwingUtil.MenuItemType.ITEM_PLAIN, this, "Ändern", 
+				new ImageIcon(this.getClass().getResource("/images/Edit.png")), 'Ä', null);
+				
+		pmiLoeschen = SwingUtil.createPopUpMenuItem(popupMenu, null, SwingUtil.MenuItemType.ITEM_PLAIN, this, "Löschen", 
+				new ImageIcon(this.getClass().getResource("/images/Delete.png")), 'L', null);
+		
+	}
+	
+	
 	public void showDialog()
 	{
 		initDialog();
@@ -128,6 +159,20 @@ public class PLZTable extends JDialog implements ActionListener, ListSelectionLi
 		Thread t = new Thread(new ShowData());
 		t.start();
 		
+	}
+	
+	
+	private void showData()
+	{
+		
+		//Thread t = new Thread(new ShowData());
+		//t.run();
+		
+		// oder
+		
+		ShowData showData = new ShowData();
+		showData.run();
+	
 	}
 	
 	
@@ -167,8 +212,76 @@ public class PLZTable extends JDialog implements ActionListener, ListSelectionLi
 	private void showPLZDialog(long Key)
 	{
 		
-		System.out.println("PRIMARYKEY: " + Key);
+		PLZForm dlg = new PLZForm(Key);
+		dlg.showDialog(this);
 		
+		if (Key > -1)
+		{
+			// Änderungsmodus
+			updateTableRow(Tabelle.getSelectedRow());
+			
+		}
+		else
+		{
+			if (dlg.getPrimaryKey() > -1)
+			{
+				showData();
+				selectRowByValue("PK", dlg.getPrimaryKey());
+			}
+		}
+		
+	}
+	
+	
+	private int selectRowByValue(String colName, Object value)
+	{
+		
+		int rowIndex = ((PLZTableModel)Tabelle.getModel()).findEntry(colName, value);
+		setSelectedRow(rowIndex);
+		
+		return rowIndex;
+	}
+	
+	
+	private void updateTableRow(int row)
+	{
+		
+		Postleitzahl plz = PostleitzahlenDAO.getPostleitzahl((long)Tabelle.getValueAt(row, 0));
+		
+		if (plz == null)
+			return;
+		
+		Tabelle.setValueAt(plz.getPLZ(), row, 1);
+		Tabelle.setValueAt(plz.getOrt(), row, 2);
+		
+	}
+	
+	
+	
+	private void deleteEntry(long Key)
+	{
+		
+		// Benutzerdefinierte Buttontexte
+		String[] options = { "Ja", "Nein" };
+		
+		int retValue = JOptionPane.showOptionDialog(this, "Datensatz löschen", "Löschen", JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE, null,
+				options, options[1]);
+		
+		if (retValue == JOptionPane.NO_OPTION)
+			return;
+		
+		
+		int selectedRow = Tabelle.getSelectedRow();
+		
+		if (PostleitzahlenDAO.deleteEntry(Key))
+		{
+			
+			showData();
+			
+			// Auf die vorherige Zeile positionieren
+			setSelectedRow(selectedRow - 1);
+			
+		}
 	}
 	
 	
@@ -282,6 +395,55 @@ public class PLZTable extends JDialog implements ActionListener, ListSelectionLi
 		}
 		
 		
+		// Spaltenindex für den angegebenen Spaltennamen ermitteln
+		public int getColumnIndex(String colName)
+		{
+			
+			int retValue = -1;
+			
+			for (int i =0; i < COLUMN_NAMES.length; i++)
+			{
+				
+				if (COLUMN_NAMES[i].equalsIgnoreCase(colName))
+				{
+					retValue = i;
+					break;
+				}
+				
+			}
+			
+			return retValue;
+		}
+		
+		public int findEntry(String colName, Object value)
+		{
+			
+			int retValue = -1;
+			
+			int colIndex = getColumnIndex(colName);
+			if (colIndex == -1)
+			{
+				return retValue;
+			}
+			
+			
+			for (int zeile = 0; zeile < getRowCount(); zeile++)
+			{
+				if (data[zeile][colIndex].toString().equals(value.toString()))
+				{
+					retValue = zeile;
+					break;
+				}
+				
+			}
+			
+			return retValue;
+			
+
+		}
+		
+		
+		
 		// Keine abstrakte Methode.
 		// Muß manuell überschrieben werden, falls notwendig.
 		@Override
@@ -308,6 +470,16 @@ public class PLZTable extends JDialog implements ActionListener, ListSelectionLi
 		{
 			return data[rowIndex][colIndex];
 		}
+
+
+		@Override
+		public void setValueAt(Object value, int rowIndex, int colIndex)
+		{
+			
+			data[rowIndex][colIndex] = value;
+			fireTableCellUpdated(rowIndex, colIndex);
+			
+		}
 		
 		
 	}
@@ -320,11 +492,16 @@ public class PLZTable extends JDialog implements ActionListener, ListSelectionLi
 		{
 			this.dispose();
 		}
-		else if (e.getSource() == miAendern)
+		else if (e.getSource() == miAendern || e.getSource() == pmiAendern)
 		{
 			showPLZDialog((long)Tabelle.getValueAt(Tabelle.getSelectedRow(), 0));
 		}
-		
+		else if (e.getSource() == miNeu || e.getSource() == pmiNeu)
+		{
+			showPLZDialog(-1);
+		}
+		else if (e.getSource() == miLoeschen || e.getSource() == pmiLoeschen)
+			deleteEntry((long)Tabelle.getValueAt(Tabelle.getSelectedRow(), 0));
 	}
 
 	@Override
@@ -356,6 +533,10 @@ public class PLZTable extends JDialog implements ActionListener, ListSelectionLi
 		{
 			e.consume();
 			showPLZDialog((long)Tabelle.getValueAt(Tabelle.getSelectedRow(), 0));
+		}
+		else if (e.getKeyCode() == KeyEvent.VK_DELETE)
+		{
+			deleteEntry((long)Tabelle.getValueAt(Tabelle.getSelectedRow(), 0));
 		}
 		
 

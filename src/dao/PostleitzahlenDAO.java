@@ -82,6 +82,43 @@ public class PostleitzahlenDAO
 	}
 	
 	
+	public static Postleitzahl getPostleitzahl(long Key)
+	{
+		
+		Postleitzahl plz = null;
+		
+		String SQL = "SELECT PRIMARYKEY, PLZ, ORT, TIMESTAMP FROM POSTLEITZAHLEN ";
+		SQL += "WHERE PRIMARYKEY = " + Long.toString(Key);
+		
+		ResultSet rSet = DBConnection.executeQuery(SQL);
+		if (rSet == null)
+			return plz;
+		
+		try
+		{
+			if (rSet.next())
+			{
+				plz = new Postleitzahl();
+				plz.setPrimaryKey(rSet.getLong("PRIMARYKEY"));
+				plz.setPLZ(rSet.getString("PLZ"));
+				plz.setOrt(rSet.getString("ORT"));
+				plz.setTimeStamp(rSet.getString("TIMESTAMP"));
+			}
+			
+			rSet.close();
+		}
+		catch (Exception ex)
+		{
+			JOptionPane.showMessageDialog(null, "Fehler beim Lesen der Postleitzahlentabelle: " + ex.getMessage(), "Fehler", 
+					                      JOptionPane.ERROR_MESSAGE);
+		}
+		
+		
+		
+		return plz;
+	}
+	
+	
 	public static List<Postleitzahl> getPostleitzahlen()
 	{
 		
@@ -117,6 +154,30 @@ public class PostleitzahlenDAO
 		
 		return list;
 	}
+	
+	
+	public static boolean updatePLZOrt(long Key, String PLZ, String Ort)
+	{
+		String SQL = "UPDATE POSTLEITZAHLEN ";
+		SQL += "SET PLZ = " + DBConnection.dbString(PLZ) + ", "; 
+		SQL += "ORT = " + DBConnection.dbString(Ort);
+		SQL += " WHERE PRIMARYKEY = " + Long.toString(Key);
+		
+		return DBConnection.executeNonQuery(SQL) > 0;
+		
+	}
+	
+	public static boolean deleteEntry(long Key)
+	{
+		
+		String SQL = "DELETE FROM POSTLEITZAHLEN ";
+		SQL += "WHERE PRIMARYKEY = " + Long.toString(Key);
+	
+		return DBConnection.executeNonQuery(SQL) > 0;
+		
+	}
+	
+	
 	
 	
 	

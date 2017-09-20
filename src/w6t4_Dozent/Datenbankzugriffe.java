@@ -1,9 +1,10 @@
-package w6t3_Dozent;
+package w6t4_Dozent;
 
 import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Font;
+import java.awt.Toolkit;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.WindowEvent;
@@ -11,6 +12,7 @@ import java.awt.event.WindowListener;
 import java.io.File;
 import java.io.FileInputStream;
 import java.text.NumberFormat;
+import java.util.Arrays;
 import java.util.Scanner;
 
 import javax.swing.*;
@@ -72,7 +74,7 @@ public class Datenbankzugriffe extends JFrame implements WindowListener, ActionL
 {
 
 	private JMenuBar menuBar;
-	private JMenu    menuDatei, menuStammdaten, menuExtras;
+	private JMenu    menuDatei, menuStammdaten, menuExtras, menuLAF;
 	private JMenuItem miBeenden, miPostleitzahlen, miPostleitzahlenImportieren;
 	
 	private StatusBar statusBar;
@@ -88,6 +90,7 @@ public class Datenbankzugriffe extends JFrame implements WindowListener, ActionL
 	private void initializeComponents()
 	{
 		this.setTitle("Datenbankzugriffe");
+		this.setIconImage(Toolkit.getDefaultToolkit().getImage(this.getClass().getResource(("/images/Server.png"))));
 		this.setSize(800,  480);
 		
 		// Das Schließen des Programms wird vom WindowListener überwacht
@@ -106,11 +109,14 @@ public class Datenbankzugriffe extends JFrame implements WindowListener, ActionL
 		
 		menuStammdaten = SwingUtil.createMenu(menuBar, "Stammdaten", null, 'S');
 		miPostleitzahlen = SwingUtil.createMenuItem(menuStammdaten, null, SwingUtil.MenuItemType.ITEM_PLAIN, this, 
-                "Postleitzahlen", null, 'p', null);
+                "Postleitzahlen", new ImageIcon(this.getClass().getResource("/images/Server.png")), 'p', null);
 		
 		menuExtras = SwingUtil.createMenu(menuBar, "Extras", null, 'x');
 		miPostleitzahlenImportieren = SwingUtil.createMenuItem(menuExtras, null, SwingUtil.MenuItemType.ITEM_PLAIN, this, 
                 "Postleitzahlen importieren...", null, 'i', null);
+		
+		
+		createLAFMenu(menuExtras);
 		
 		// Die Menübar zum Frame hinzufügen
 		this.setJMenuBar(menuBar);
@@ -118,6 +124,8 @@ public class Datenbankzugriffe extends JFrame implements WindowListener, ActionL
 		
 		// Statusleiste
 		statusBar = new StatusBar();
+		// Symbol zur Statusbar hinzufügen
+		statusBar.setIcon(new ImageIcon(this.getClass().getResource("/images/Server.png")));
 		statusBar.setPreferredSize(new Dimension(0, 28));
 		statusBar.setStatusLabelFont(statusBar.getStatusLabelFont().deriveFont(Font.PLAIN));
 		this.add(statusBar, BorderLayout.PAGE_END);
@@ -158,6 +166,46 @@ public class Datenbankzugriffe extends JFrame implements WindowListener, ActionL
 		// Initial unsichtbar
 		progressBar.setVisible(false);
 		statusBar.add(progressBar, BorderLayout.LINE_END);
+		
+	}
+	
+	
+	private void createLAFMenu(JMenu menu)
+	{
+		String currentLAFName;
+		
+		int i = Globals.getLookAndFeels();
+		if (i == 0)
+			return;
+		
+		Object[] array = Globals.getLAFTable().keySet().toArray();
+		
+		// Aufsteigende Sortierung
+		Arrays.sort(array);
+		
+		menu.addSeparator();
+		
+		menuLAF = SwingUtil.createSubMenu(menu, "Look and Feel", null, 'L');
+		
+		// LookAndFeel-Menü mit RadioButtons erstellen
+		
+		// Den akuellen LookAndFeel-Name des Systems ermitteln.
+		currentLAFName = Globals.getLookAndFeelName();
+				
+		ButtonGroup bg = new ButtonGroup();
+		
+		for (Object obj : array)
+		{
+			
+			JMenuItem mi = SwingUtil.createMenuItem(menuLAF, null, SwingUtil.MenuItemType.ITEM_RADIO, this, obj.toString(), null, 0, null);
+			bg.add(mi);
+			
+			// Den aktuellen LookAndFeel-Namen im Menu auswählen
+			if (obj.toString().equals(currentLAFName))
+				mi.setSelected(true);
+			
+		}
+		
 		
 	}
 	
@@ -528,7 +576,11 @@ public class Datenbankzugriffe extends JFrame implements WindowListener, ActionL
 			openFileDialog();
 		else if (e.getSource() == miPostleitzahlen)
 			showPLZTable();
-		
+		// LookAndFeel
+		else if (e.getActionCommand() != null)
+		{
+			Globals.setLookAndFeel(e.getActionCommand(), this);
+		}
 	}
 
 }

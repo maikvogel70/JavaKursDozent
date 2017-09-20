@@ -1,9 +1,10 @@
-package w6t3_Dozent;
+package w6t5_Dozent;
 
 import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Font;
+import java.awt.Toolkit;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.WindowEvent;
@@ -11,6 +12,7 @@ import java.awt.event.WindowListener;
 import java.io.File;
 import java.io.FileInputStream;
 import java.text.NumberFormat;
+import java.util.Arrays;
 import java.util.Scanner;
 
 import javax.swing.*;
@@ -67,12 +69,46 @@ import util.SwingUtil;
 //6. 	Aufruf von XAMPP Für Windows über den Browser (Firefox) mit localhost.
 //7. 	Auswahl von phpAdmin in der obersten Zeile. 
 
+//Verwenden von Microsoft SQL Server als Datenbank
+//
+//1. 	Herunterladen Microsoft JDBC Driver 4.0 für SQL Server von
+//		http://www.microsoft.com/de-de/download/details.aspx?id=11774
+//2. 	Ausführen der Exe-Datei.
+//3. 	Das Java Archiv sqljdbc4.jar in das Verzeichnis 'lib' des
+//		Workspaces kopieren.
+//4. 	Für die Anmeldung mit Windows Authentifizierung die Bibliothek 'sqljdbc_auth.dll'
+//		aus dem Verzeichnis 'Microsoft JDBC Driver 4.0 for SQL Server\sqljdbc_4.0\deu\auth\x64'   
+//		in das Verzeichnis 'Windows\System32 kopieren.
+
+
+//Einstellungen der Collation Order (Sortierreihenfolge) der Datenbanken.
+
+//Wichtig für die Unterscheidung von 'ß' und "ss":
+//1. 	mySQL/MarioDB : latin1_general_ci
+//2. 	Microsoft SQL Server: Latin1_General_CI_AS.
+//		zur Unterscheidung von Orten die einmal mit 'ß' und einmal mit 'ss' geschrieben werden
+//		29229 - Celle - Garßen
+//		52224 - Stolberg - Süßendell
+//		99444 - Blankenhain - Keßlar
+
+//Layout für die Tabelle Postleitzahlen
+
+//	Feldname				Typ		
+//  ------------------------------------------------------------------------------------------------- 
+//	PRIMARYKEY			bigint								(Primärschlüssel)
+//	PLZ					varchar(10)	                        (Nicht eindeutiger Index)
+//	ORT					varchar(100)                        (Eindeutiger Index PLZ, ORT )
+//	TIMESTAMP         	timestamp
+
+
+
+
 
 public class Datenbankzugriffe extends JFrame implements WindowListener, ActionListener
 {
 
 	private JMenuBar menuBar;
-	private JMenu    menuDatei, menuStammdaten, menuExtras;
+	private JMenu    menuDatei, menuStammdaten, menuExtras, menuLAF;
 	private JMenuItem miBeenden, miPostleitzahlen, miPostleitzahlenImportieren;
 	
 	private StatusBar statusBar;
@@ -88,6 +124,7 @@ public class Datenbankzugriffe extends JFrame implements WindowListener, ActionL
 	private void initializeComponents()
 	{
 		this.setTitle("Datenbankzugriffe");
+		this.setIconImage(Toolkit.getDefaultToolkit().getImage(this.getClass().getResource(("/images/Server.png"))));
 		this.setSize(800,  480);
 		
 		// Das Schließen des Programms wird vom WindowListener überwacht
@@ -106,11 +143,14 @@ public class Datenbankzugriffe extends JFrame implements WindowListener, ActionL
 		
 		menuStammdaten = SwingUtil.createMenu(menuBar, "Stammdaten", null, 'S');
 		miPostleitzahlen = SwingUtil.createMenuItem(menuStammdaten, null, SwingUtil.MenuItemType.ITEM_PLAIN, this, 
-                "Postleitzahlen", null, 'p', null);
+                "Postleitzahlen", new ImageIcon(this.getClass().getResource("/images/Server.png")), 'p', null);
 		
 		menuExtras = SwingUtil.createMenu(menuBar, "Extras", null, 'x');
 		miPostleitzahlenImportieren = SwingUtil.createMenuItem(menuExtras, null, SwingUtil.MenuItemType.ITEM_PLAIN, this, 
                 "Postleitzahlen importieren...", null, 'i', null);
+		
+		
+		createLAFMenu(menuExtras);
 		
 		// Die Menübar zum Frame hinzufügen
 		this.setJMenuBar(menuBar);
@@ -118,6 +158,8 @@ public class Datenbankzugriffe extends JFrame implements WindowListener, ActionL
 		
 		// Statusleiste
 		statusBar = new StatusBar();
+		// Symbol zur Statusbar hinzufügen
+		statusBar.setIcon(new ImageIcon(this.getClass().getResource("/images/Server.png")));
 		statusBar.setPreferredSize(new Dimension(0, 28));
 		statusBar.setStatusLabelFont(statusBar.getStatusLabelFont().deriveFont(Font.PLAIN));
 		this.add(statusBar, BorderLayout.PAGE_END);
@@ -161,13 +203,54 @@ public class Datenbankzugriffe extends JFrame implements WindowListener, ActionL
 		
 	}
 	
+	
+	private void createLAFMenu(JMenu menu)
+	{
+		String currentLAFName;
+		
+		int i = Globals.getLookAndFeels();
+		if (i == 0)
+			return;
+		
+		Object[] array = Globals.getLAFTable().keySet().toArray();
+		
+		// Aufsteigende Sortierung
+		Arrays.sort(array);
+		
+		menu.addSeparator();
+		
+		menuLAF = SwingUtil.createSubMenu(menu, "Look and Feel", null, 'L');
+		
+		// LookAndFeel-Menü mit RadioButtons erstellen
+		
+		// Den akuellen LookAndFeel-Name des Systems ermitteln.
+		currentLAFName = Globals.getLookAndFeelName();
+				
+		ButtonGroup bg = new ButtonGroup();
+		
+		for (Object obj : array)
+		{
+			
+			JMenuItem mi = SwingUtil.createMenuItem(menuLAF, null, SwingUtil.MenuItemType.ITEM_RADIO, this, obj.toString(), null, 0, null);
+			bg.add(mi);
+			
+			// Den aktuellen LookAndFeel-Namen im Menu auswählen
+			if (obj.toString().equals(currentLAFName))
+				mi.setSelected(true);
+			
+		}
+		
+		
+	}
+	
 	private void initFrame()
 	{
 		// In der Mitte des Desktops anzeigen
 		this.setLocationRelativeTo(null);
 		
-		openMariaDB();
+		//openMariaDB();
 		
+		openMicrosoftSQLDatabase();
 	}
 	
 	
@@ -190,6 +273,22 @@ public class Datenbankzugriffe extends JFrame implements WindowListener, ActionL
 	}
 	
 
+	private void openMicrosoftSQLDatabase()
+	{
+		String connectionString, classForName;
+		String server = "localhost";
+		String dataBase = "alfatraining";
+		
+		classForName = "com.microsoft.sqlserver.jdbc.SQLServerDriver";
+		
+		connectionString = "jdbc:sqlserver://" + server + ";DatabaseName=" + dataBase + ";";
+		
+		dbEnabled(DBConnection.connectToDatabase(classForName, connectionString, "alfa-sql", "alfa"));
+		
+		
+	}
+	
+	
 	private void dbEnabled(boolean enabled)
 	{
 		
@@ -528,7 +627,11 @@ public class Datenbankzugriffe extends JFrame implements WindowListener, ActionL
 			openFileDialog();
 		else if (e.getSource() == miPostleitzahlen)
 			showPLZTable();
-		
+		// LookAndFeel
+		else if (e.getActionCommand() != null)
+		{
+			Globals.setLookAndFeel(e.getActionCommand(), this);
+		}
 	}
 
 }
